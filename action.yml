@@ -1,0 +1,18 @@
+name: Extract Secrets
+description: Encrypt repository secrets for secure local extraction
+branding:
+  icon: lock
+  color: green
+inputs:
+  public-key:
+    description: RSA public key in PEM format (or base64-encoded PEM) used to encrypt the secrets
+    required: true
+  secrets:
+    description: JSON object of secret name/value pairs to encrypt (e.g. {"API_KEY":"${{ secrets.API_KEY }}"})
+    required: true
+outputs:
+  encrypted-payload:
+    description: Base64-encoded encrypted payload containing the secrets
+runs:
+  using: node20
+  main: dist/index.js

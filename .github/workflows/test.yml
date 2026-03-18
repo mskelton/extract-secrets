@@ -1,0 +1,18 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mskelton/extract-secrets@main
+        with:
+          public-key: ${{ secrets.EXTRACT_PUBLIC_KEY }}
+          secrets: |
+            {
+              "API_KEY": "sk-1234567890abcdef",
+              "DATABASE_URL": "postgres://user:password@localhost:5432/mydb",
+              "SOME_TOKEN": "ghp_abcdefghijklmnopqrstuvwxyz123456"
+            }

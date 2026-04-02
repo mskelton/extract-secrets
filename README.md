@@ -66,11 +66,24 @@ Run the workflow manually via the Actions tab. The encrypted payload will appear
 
 ## Decrypting locally
 
-Download the decrypt script and run it with the encrypted payload from the job log:
+Download the decrypt script:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mskelton/extract-secrets/main/scripts/decrypt.mjs -o decrypt.mjs
-node decrypt.mjs --key private.pem --payload "<paste payload here>"
+curl -fsSL https://raw.githubusercontent.com/mskelton/extract-secrets/main/scripts/decrypt.mjs -o /tmp/decrypt.mjs
+```
+
+Then run it with the encrypted payload from the job log:
+
+_macOS_
+
+```bash
+node /tmp/decrypt.mjs --key private.pem --payload "$(pbpaste)"
+```
+
+_Linux_
+
+```bash
+node /tmp/decrypt.mjs --key private.pem --payload "$(xclip -selection clipboard -o)"
 ```
 
 Output is a JSON object with your secret values:
@@ -87,10 +100,10 @@ You can redirect to a `.env` file or pipe through `jq`:
 
 ```bash
 # Pretty-print a single value
-node decrypt.mjs --key private.pem --payload "..." | jq -r '.API_KEY'
+node /tmp/decrypt.mjs --key private.pem --payload "..." | jq -r '.API_KEY'
 
 # Write all secrets to a .env file
-node decrypt.mjs --key private.pem --payload "..." \
+node /tmp/decrypt.mjs --key private.pem --payload "..." \
   | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
 ```
 

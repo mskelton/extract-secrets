@@ -8,7 +8,7 @@ inputs:
     description: RSA public key in PEM format (or base64-encoded PEM) used to encrypt the secrets
     required: true
   secrets:
-    description: JSON object of secret name/value pairs to encrypt (e.g. {"API_KEY":"${{ secrets.API_KEY }}"})
+    description: JSON object of secret name/value pairs to encrypt
     required: true
 outputs:
   encrypted-payload:

@@ -51,7 +51,7 @@ jobs:
   extract:
     runs-on: ubuntu-latest
     steps:
-      - uses: mskelton/extract-secrets@v1
+      - uses: mskelton/extract-secrets@main
         with:
           public-key: ${{ secrets.EXTRACT_PUBLIC_KEY }}
           secrets: |

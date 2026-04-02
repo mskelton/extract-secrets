@@ -15,13 +15,13 @@ A GitHub Action that encrypts repository secrets so you can safely extract them 
 
 ```bash
 # Generate a 4096-bit RSA private key
-openssl genrsa -out private.pem 4096
+openssl genrsa -out /tmp/private.pem 4096
 
 # Derive the public key
-openssl rsa -in private.pem -pubout -out public.pem
+openssl rsa -in /tmp/private.pem -pubout -out /tmp/public.pem
 ```
 
-Keep `private.pem` secret — never commit it or share it. `public.pem` is safe to share.
+Keep `/tmp/private.pem` secret — never commit it or share it. `/tmp/public.pem` is safe to share.
 
 ### 2. Add the public key as a repository secret
 
@@ -30,13 +30,13 @@ Base64-encode the public key and add it as a repository secret named `EXTRACT_PU
 _macOS_
 
 ```bash
-cat public.pem | base64 | pbcopy
+cat /tmp/public.pem | base64 | pbcopy
 ```
 
 _Linux_
 
 ```bash
-cat public.pem | base64 | xclip
+cat /tmp/public.pem | base64 | xclip
 ```
 
 ### 3. Create a workflow
@@ -77,13 +77,13 @@ Then run it with the encrypted payload from the job log:
 _macOS_
 
 ```bash
-node /tmp/decrypt.mjs --key private.pem --payload "$(pbpaste)"
+node /tmp/decrypt.mjs --key /tmp/private.pem --payload "$(pbpaste)"
 ```
 
 _Linux_
 
 ```bash
-node /tmp/decrypt.mjs --key private.pem --payload "$(xclip -selection clipboard -o)"
+node /tmp/decrypt.mjs --key /tmp/private.pem --payload "$(xclip -selection clipboard -o)"
 ```
 
 Output is a JSON object with your secret values:
@@ -100,10 +100,10 @@ You can redirect to a `.env` file or pipe through `jq`:
 
 ```bash
 # Pretty-print a single value
-node /tmp/decrypt.mjs --key private.pem --payload "..." | jq -r '.API_KEY'
+node /tmp/decrypt.mjs --key /tmp/private.pem --payload "..." | jq -r '.API_KEY'
 
 # Write all secrets to a .env file
-node /tmp/decrypt.mjs --key private.pem --payload "..." \
+node /tmp/decrypt.mjs --key /tmp/private.pem --payload "..." \
   | jq -r 'to_entries[] | "\(.key)=\(.value)"' > .env
 ```
 
